@@ -1,0 +1,6 @@
+django
+openai
+deep-translator
+python-decouple
+Pillow
+gTTS

@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Upload an image and generate a fun cartoon story for kids in multiple languages!">
+    <title>🎨 Cartoon Story Generator</title>
+
+    <!-- Google Fonts — Playful Typography -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;600;700;800&display=swap" rel="stylesheet">
+
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+
+    <!-- Floating Decorations -->
+    <div class="floating-star" style="top:10%;left:5%;animation-delay:0s;">⭐</div>
+    <div class="floating-star" style="top:20%;right:8%;animation-delay:1s;">🌈</div>
+    <div class="floating-star" style="bottom:15%;left:10%;animation-delay:2s;">✨</div>
+    <div class="floating-star" style="top:60%;right:5%;animation-delay:0.5s;">🎈</div>
+    <div class="floating-star" style="bottom:30%;right:15%;animation-delay:1.5s;">🦋</div>
+
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1>🎨 Cartoon Story Generator</h1>
+            <p class="subtitle">Upload a picture and we'll create a magical story just for you! ✨</p>
+        </div>
+
+        <!-- Upload Card -->
+        <div class="card">
+            <form method="POST" action="{% url 'generate_story' %}" enctype="multipart/form-data" id="story-form">
+                {% csrf_token %}
+
+                <!-- Image Upload Area -->
+                <div class="upload-area" id="upload-area" onclick="document.getElementById('image-input').click()">
+                    <div class="upload-icon">📷</div>
+                    <p class="upload-text">Click or drag an image here!</p>
+                    <p class="upload-hint">JPG, PNG — any picture works</p>
+                    <input type="file" name="image" accept="image/*" id="image-input" required hidden>
+                </div>
+
+                <!-- Image Preview -->
+                <div class="preview-container" id="preview-container" style="display:none;">
+                    <img id="image-preview" src="" alt="Preview">
+                    <button type="button" class="remove-btn" onclick="removeImage()">✕ Remove</button>
+                </div>
+
+                <!-- Language Selection -->
+                <div class="form-group">
+                    <label for="language-select">🌍 Choose a Language</label>
+                    <select name="language" id="language-select" required>
+                        <option value="" disabled selected>Pick a language...</option>
+                        <option value="english">🇬🇧 English</option>
+                        <option value="hindi">🇮🇳 Hindi (हिन्दी)</option>
+                        <option value="kannada">🇮🇳 Kannada (ಕನ್ನಡ)</option>
+                        <option value="tamil">🇮🇳 Tamil (தமிழ்)</option>
+                        <option value="telugu">🇮🇳 Telugu (తెలుగు)</option>
+                    </select>
+                </div>
+
+                <!-- Submit Button -->
+                <button type="submit" class="btn-generate" id="btn-generate">
+                    <span class="btn-text">🚀 Generate My Story!</span>
+                    <span class="btn-loading" style="display:none;">
+                        <span class="spinner"></span> Creating magic...
+                    </span>
+                </button>
+            </form>
+        </div>
+
+        <!-- Footer -->
+        <div class="footer">
+            <p>Made with ❤️ for little storytellers</p>
+        </div>
+    </div>
+
+    <script>
+        // Image preview
+        const imageInput = document.getElementById('image-input');
+        const uploadArea = document.getElementById('upload-area');
+        const previewContainer = document.getElementById('preview-container');
+        const imagePreview = document.getElementById('image-preview');
+
+        imageInput.addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(ev) {
+                    imagePreview.src = ev.target.result;
+                    uploadArea.style.display = 'none';
+                    previewContainer.style.display = 'block';
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        function removeImage() {
+            imageInput.value = '';
+            imagePreview.src = '';
+            uploadArea.style.display = 'flex';
+            previewContainer.style.display = 'none';
+        }
+
+        // Drag and Drop
+        uploadArea.addEventListener('dragover', function(e) {
+            e.preventDefault();
+            uploadArea.classList.add('drag-over');
+        });
+        uploadArea.addEventListener('dragleave', function() {
+            uploadArea.classList.remove('drag-over');
+        });
+        uploadArea.addEventListener('drop', function(e) {
+            e.preventDefault();
+            uploadArea.classList.remove('drag-over');
+            const files = e.dataTransfer.files;
+            if (files.length > 0) {
+                imageInput.files = files;
+                imageInput.dispatchEvent(new Event('change'));
+            }
+        });
+
+        // Loading state on submit
+        document.getElementById('story-form').addEventListener('submit', function() {
+            const btn = document.getElementById('btn-generate');
+            btn.querySelector('.btn-text').style.display = 'none';
+            btn.querySelector('.btn-loading').style.display = 'inline-flex';
+            btn.disabled = true;
+        });
+    </script>
+
+</body>
+</html>

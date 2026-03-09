@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Your magical cartoon story is ready!">
+    <title>📖 Your Story — Cartoon Story Generator</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;600;700;800&display=swap" rel="stylesheet">
+
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+
+<body>
+
+    <!-- Floating Decorations -->
+    <div class="floating-star" style="top:8%;left:3%;animation-delay:0s;">⭐</div>
+    <div class="floating-star" style="top:15%;right:6%;animation-delay:1.2s;">🌟</div>
+    <div class="floating-star" style="bottom:20%;left:8%;animation-delay:0.8s;">🎉</div>
+    <div class="floating-star" style="bottom:10%;right:10%;animation-delay:2s;">🦄</div>
+
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1>📖 Your Cartoon Story!</h1>
+            <p class="subtitle">
+                Language: <span class="language-badge">{{ story.get_language_display }}</span>
+            </p>
+        </div>
+
+        <!-- Result Card -->
+        <div class="card result-card">
+
+            <!-- Image Comparison: Original vs Cartoon -->
+            <div class="image-comparison">
+                <div class="image-col">
+                    <h3 class="image-label">📷 Original Image</h3>
+                    <img src="{{ story.image.url }}" alt="Original Image" class="result-image">
+                </div>
+
+                {% if story.cartoon_image %}
+                <div class="image-col">
+                    <h3 class="image-label">🎨 Cartoon Version</h3>
+                    <img src="{{ story.cartoon_image.url }}" alt="Cartoon Image" class="result-image cartoon-glow">
+                </div>
+                {% endif %}
+            </div>
+
+            <!-- Generated Story -->
+            <div class="story-box">
+                <h2 class="story-heading">📜 The Story</h2>
+                <p class="story-text">{{ story_text }}</p>
+            </div>
+
+            <!-- Moral of the Story -->
+            {% if moral_text %}
+            <div class="moral-box">
+                <h3 class="moral-heading">💡 Moral of the Story</h3>
+                <p class="moral-text">{{ moral_text }}</p>
+            </div>
+            {% endif %}
+
+            <!-- Voice-Over Audio Player -->
+            {% if story.audio %}
+            <div class="audio-section">
+                <h3 class="audio-heading">🔊 Listen to the Story</h3>
+                <audio controls class="audio-player">
+                    <source src="{{ story.audio.url }}" type="audio/mpeg">
+                    Your browser does not support the audio element.
+                </audio>
+            </div>
+            {% endif %}
+
+            <!-- Metadata -->
+            <div class="story-meta">
+                <span>🗓️ {{ story.created_at|date:"d M Y, h:i A" }}</span>
+            </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="action-buttons">
+            <a href="{% url 'home' %}" class="btn-back">
+                🎨 Create Another Story!
+            </a>
+        </div>
+
+        <!-- Footer -->
+        <div class="footer">
+            <p>Made with ❤️ for little storytellers</p>
+        </div>
+    </div>
+
+</body>
+
+</html>
